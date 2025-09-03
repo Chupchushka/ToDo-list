@@ -4,21 +4,21 @@
 
 class dbControl {
     private:
-        
-    public:
         sqlite3 *db;
+    public:
         
-        void openDB(char* filename, sqlite3* database) {
-            int opened = sqlite3_open(filename, &database);
+
+        void openDB(char* filename) {
+            int opened = sqlite3_open(filename, &db);
             if(opened){ // check if opening the database is successful
-             printf("Database could not be opened %s \n", sqlite3_errmsg(database));
+             printf("Database could not be opened %s \n", sqlite3_errmsg(db));
             } else {
               printf("opened database successfuly \n");
-                db = database;
+                //db = db;
             }
         }
 
-        void execSQL(sqlite3* db, char* sql) {
+        void execSQL(char* sql) {
             char* errMsg;
             
             int rc = sqlite3_exec(db, sql, NULL, 0, &errMsg);
@@ -26,11 +26,11 @@ class dbControl {
                 printf("error occured %s\n", errMsg);
                 sqlite3_free(errMsg);
             } else {
-                printf("deleted record successfully \n");
+                printf("sql runned succesfully \n");
             }
         }
 
-        void closeDB(sqlite3* db) {
+        void closeDB() {
             sqlite3_close(db);
             printf("closed database successfully \n");
         }
