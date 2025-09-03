@@ -1,16 +1,53 @@
 #include <stdio.h>
-#include "db-control.hpp"
+#include "db_service.hpp"
+#include "todo_service.hpp"
+#include <memory>
+#include <string>
+#include <iostream>
 
-dbControl db_controller;
+auto db_controller = std::unique_ptr<DbService>(new DbService());
+auto todo_service = std::unique_ptr<TodoService>(new TodoService(*db_controller));
+
 char* filename = "db.sqlite3";
 
 
 int main() {
-    db_controller.openDB(filename);
-    db_controller.execSQL("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, task TEXT NOT NULL);");
-    db_controller.execSQL("DELETE FROM tasks;"); // Clear existing data
-    db_controller.execSQL("INSERT INTO tasks (task) VALUES ('Task 1');");
-    db_controller.readDataStmt("tasks");
-    db_controller.closeDB();
+    std::string input;
+
+    db_controller->openDB(filename);
+
+    while (true)
+    {
+        std::cout << "Enter command: ";
+        std::getline(std::cin, input);
+
+        if (input == "add") {
+            std::string task;
+            printf("Enter task description: ");
+            std::getline(std::cin, task);
+            todo_service->addTask(task.c_str());
+        }
+        else if (input == "remove") {
+            int id;
+            printf("Enter task ID to remove: ");
+            std::cin >> id;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            todo_service->removeTask(id);
+        }
+        else if (input == "list") {
+            todo_service->listTasks();
+        }
+        else if (input == "exit") {
+            printf("Exiting...\n");
+            break;
+        }
+        else {
+            printf("Unknown command. Available commands: add, remove, list, exit\n");
+        }
+    }
+    
+
+    db_controller->closeDB();
+
     return 0;
 }
