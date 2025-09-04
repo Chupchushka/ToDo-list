@@ -10,7 +10,7 @@ class TodoService {
 
         void addTask(const char* task) {
             char sql[256];
-            snprintf(sql, sizeof(sql), "INSERT INTO tasks (task) VALUES ('%s');", task);
+            snprintf(sql, sizeof(sql), "INSERT INTO tasks (task, done) VALUES ('%s', 0);", task);
             dbService.execSQL(sql);
         }
 
@@ -20,12 +20,14 @@ class TodoService {
             dbService.execSQL(sql);
         }
 
-        void createTasksTable() {
-            dbService.execSQL("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, task TEXT NOT NULL);");
-        }
-
         void listTasks() {
             dbService.readDataStmt("tasks");
+        }
+
+        void markTaskDone(const int id, bool done) {
+            char sql[256];
+            snprintf(sql, sizeof(sql), "UPDATE tasks SET done = %d WHERE id = %d;", done ? 1 : 0, id);
+            dbService.execSQL(sql);
         }
     
 };
