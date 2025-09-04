@@ -10,9 +10,10 @@ class DbService {
         void openDB(char* filename) {
             int opened = sqlite3_open(filename, &db);
             if(opened){ // check if opening the database is successful
-             printf("Database could not be opened %s \n", sqlite3_errmsg(db));
+             //printf("Database could not be opened %s \n", sqlite3_errmsg(db));
             } else {
-              printf("opened database successfuly \n");
+              //printf("opened database successfuly \n");
+              execSQL("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, task TEXT NOT NULL, done BOOLEAN NOT NULL CHECK (done IN (0, 1)));");
                 //db = db;
             }
         }
@@ -25,13 +26,13 @@ class DbService {
                 printf("error occured %s\n", errMsg);
                 sqlite3_free(errMsg);
             } else {
-                printf("sql runned succesfully \n");
+                //printf("sql runned succesfully \n");
             }
         }
 
         void closeDB() {
             sqlite3_close(db);
-            printf("closed database successfully \n");
+            //printf("closed database successfully \n");
         }
 
         void readDataStmt(const char* tableName){
@@ -43,25 +44,21 @@ class DbService {
             if(rc != SQLITE_OK){
                 printf("error occurred: %s\n", sqlite3_errmsg(db));
             } else {
-                int NoOfCols = sqlite3_column_count(stmt);
-                bool done = false;
-                while(!done){
-                    switch(sqlite3_step(stmt)){
-                    case SQLITE_ROW:
-                        for(int i=0; i<NoOfCols; i++){
-                            const char* colName = sqlite3_column_name(stmt, i);
-                            const unsigned char* text = sqlite3_column_text(stmt, i);
-                            printf("Col: %s = %s \n", colName, text);
-                        }
-                        printf("\n");
-                        break;
-                    case SQLITE_DONE:
-                        printf("done reading all rows \n");
-                        sqlite3_finalize(stmt);
-                        done = true;
-                        break;
-                    }
+                // Print table header
+                printf("+----+----------------------+------+\n");
+                printf("| ID | Task                 | Done |\n");
+                printf("+----+----------------------+------+\n");
+
+                while(sqlite3_step(stmt) == SQLITE_ROW){
+                    int id = sqlite3_column_int(stmt, 0);
+                    const unsigned char* task = sqlite3_column_text(stmt, 1);
+                    int done = sqlite3_column_int(stmt, 2);
+
+                    printf("| %-2d | %-20s | %-4s |\n", id, task, done ? "TRUE" : "FALSE");
                 }
+                printf("+----+----------------------+------+\n");
+                printf("done reading all rows \n");
+                sqlite3_finalize(stmt);
             }
         }
 };
