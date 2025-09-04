@@ -29,5 +29,15 @@ class TodoService {
             snprintf(sql, sizeof(sql), "UPDATE tasks SET done = %d WHERE id = %d;", done ? 1 : 0, id);
             dbService.execSQL(sql);
         }
+
+        void print_help() {
+            std::cout << "Clist CLI Help\n";
+            std::cout << "Usage:\n";
+            std::cout << "  add <task>            or -a <task>            : Add a new task\n";
+            std::cout << "  remove <id>           or -r <id>              : Remove a task by id\n";
+            std::cout << "  list                  or -l                   : List all tasks\n";
+            std::cout << "  mark <id> done/false  or -m <id> done/false   : Mark task as done/false\n";
+            std::cout << "  help                  or -h                   : Show this help message\n";
+}
     
 };
