@@ -9,6 +9,7 @@ auto db_controller = std::unique_ptr<DbService>(new DbService());
 auto todo_service = std::unique_ptr<TodoService>(new TodoService(*db_controller));
 
 char *filename = "db.sqlite3";
+const char *version = "1.0.0";
 
 int main(int argc, char *argv[])
 {
@@ -34,17 +35,17 @@ int main(int argc, char *argv[])
         }
         else if (std::string(argv[i]) == "list" || std::string(argv[i]) == "-l")
         {
-            todo_service->listTasks();
+            todo_service->print_table();
         }
         else if (std::string(argv[i]) == "mark" || std::string(argv[i]) == "-m" && i + 1 < argc)
         {
             todo_service->markTaskDone(std::stoi(argv[i + 1]), argv[i + 2] && std::string(argv[i + 2]) == "done" ? true : false);
             i += 2;
         }
-        else if (std::string(argv[i]) == "tag" && i + 2 < argc || std::string(argv[i]) == "-t" && i + 2 < argc)
+        else if (std::string(argv[i]) == "tag" && i + 3 < argc || std::string(argv[i]) == "-t" && i + 3 < argc)
         {
-            todo_service->addTag(argv[i + 1], std::stoi(argv[i + 2]));
-            i += 2;
+            todo_service->addTag(argv[i + 1], argv[i + 2], std::stoi(argv[i + 3]));
+            i += 3;
         }
         else if (std::string(argv[i]) == "rtag" && i + 1 < argc || std::string(argv[i]) == "-rt" && i + 1 < argc)
         {
@@ -54,6 +55,10 @@ int main(int argc, char *argv[])
         else if (std::string(argv[i]) == "help" || std::string(argv[i]) == "-h")
         {
             todo_service->print_help();
+        }
+        else if (std::string(argv[i]) == "version" || std::string(argv[i]) == "-v")
+        {
+            std::cout << "Clist version: " << version << std::endl;
         }
         else
         {
