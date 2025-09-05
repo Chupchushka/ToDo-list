@@ -8,40 +8,59 @@
 auto db_controller = std::unique_ptr<DbService>(new DbService());
 auto todo_service = std::unique_ptr<TodoService>(new TodoService(*db_controller));
 
-char* filename = "db.sqlite3";
+char *filename = "db.sqlite3";
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     std::string input;
 
     db_controller->openDB(filename);
 
-    //Loop through command line arguments
-    
-    for (int i = 1; i < argc; i++) {
+    // Loop through command line arguments
 
-        if ((std::string(argv[i]) == "add" || std::string(argv[i]) == "-a") && i + 1 < argc) {
+    for (int i = 1; i < argc; i++)
+    {
+
+        if ((std::string(argv[i]) == "add" || std::string(argv[i]) == "-a") && i + 1 < argc)
+        {
             todo_service->addTask(argv[i + 1]);
             i++;
-        } else if ((std::string(argv[i]) == "remove" || std::string(argv[i]) == "-r") && i + 1 < argc) {
+        }
+        else if ((std::string(argv[i]) == "remove" || std::string(argv[i]) == "-r") && i + 1 < argc)
+        {
             int id = std::stoi(argv[i + 1]);
             todo_service->removeTask(id);
             i++;
-        } else if (std::string(argv[i]) == "list" || std::string(argv[i]) == "-l") {
+        }
+        else if (std::string(argv[i]) == "list" || std::string(argv[i]) == "-l")
+        {
             todo_service->listTasks();
-        } else if (std::string(argv[i]) == "mark" || std::string(argv[i]) == "-m" && i + 1 < argc) {
+        }
+        else if (std::string(argv[i]) == "mark" || std::string(argv[i]) == "-m" && i + 1 < argc)
+        {
             todo_service->markTaskDone(std::stoi(argv[i + 1]), argv[i + 2] && std::string(argv[i + 2]) == "done" ? true : false);
-            i+=2;
-        } else if (std::string(argv[i]) == "tag" && i + 2 < argc || std::string(argv[i]) == "-t"&& i + 2 < argc) {
+            i += 2;
+        }
+        else if (std::string(argv[i]) == "tag" && i + 2 < argc || std::string(argv[i]) == "-t" && i + 2 < argc)
+        {
             todo_service->addTag(argv[i + 1], std::stoi(argv[i + 2]));
-            i += 2; 
-        } else if (std::string(argv[i]) == "help" || std::string(argv[i]) == "-h") {
-            todo_service->print_help();
-        } else {
+            i += 2;
+        }
+        else if (std::string(argv[i]) == "rtag" && i + 1 < argc || std::string(argv[i]) == "-rt" && i + 1 < argc)
+        {
+            todo_service->removeTag(std::stoi(argv[i + 1]));
+            i++;
+        }
+        else if (std::string(argv[i]) == "help" || std::string(argv[i]) == "-h")
+        {
             todo_service->print_help();
         }
-
+        else
+        {
+            todo_service->print_help();
+        }
     }
-    
+
     db_controller->closeDB();
 
     return 0;
