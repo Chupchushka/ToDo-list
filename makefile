@@ -7,3 +7,15 @@ clean:
 	rm -f clist
 	rm -f db.sqlite3
 	echo "Clean complete."
+rebuild: clean all
+	echo "Rebuild complete."
+test: rebuild
+	clist -a "Test task 1"
+	clist -a "Test task 2"
+	clist -a "Test task 3"
+
+	clist -t "urgent" 1
+	clist -t "work" 2
+	clist -t "personal" 3
+
+	echo "Test complete."

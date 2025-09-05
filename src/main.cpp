@@ -30,7 +30,10 @@ int main(int argc, char* argv[]) {
             todo_service->listTasks();
         } else if (std::string(argv[i]) == "mark" || std::string(argv[i]) == "-m" && i + 1 < argc) {
             todo_service->markTaskDone(std::stoi(argv[i + 1]), argv[i + 2] && std::string(argv[i + 2]) == "done" ? true : false);
-            i++;
+            i+=2;
+        } else if (std::string(argv[i]) == "tag" && i + 2 < argc || std::string(argv[i]) == "-t"&& i + 2 < argc) {
+            todo_service->addTag(argv[i + 1], std::stoi(argv[i + 2]));
+            i += 2; 
         } else if (std::string(argv[i]) == "help" || std::string(argv[i]) == "-h") {
             todo_service->print_help();
         } else {
