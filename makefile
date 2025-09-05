@@ -17,8 +17,8 @@ test: rebuild
 	clist -a "Test task 2"
 	clist -a "Test task 3"
 
-	clist -t "urgent" 1
-	clist -t "work" 2
-	clist -t "personal" 3
+	clist -t "urgent" "red" 1
+	clist -t "work" "green" 2
+	clist -t "personal" "yellow" 3
 
 	echo "Test complete."
