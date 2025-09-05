@@ -10,6 +10,8 @@ private:
 public:
     DbService &dbService;
 
+    // Dependency injection 
+
     TodoService(DbService &db) : dbService(db)
     {
     }
@@ -101,12 +103,12 @@ public:
             std::string color_code = color ? color_codes[std::string(reinterpret_cast<const char *>(color))] : "";
             std::string reset_code = color_codes["reset"];
 
-            // Print row with color for task and tag
+            // Print row with color for all columns
             std::cout << "| "
-                      << id << "  | "
+                      << color_code << id << reset_code << "  | "
                       << color_code << std::setw(20) << std::left << (task ? reinterpret_cast<const char *>(task) : "") << reset_code << " | "
                       << color_code << std::setw(20) << std::left << (tag ? reinterpret_cast<const char *>(tag) : "") << reset_code << " | "
-                      << std::setw(5) << std::left << (done ? "TRUE" : "FALSE") << " |" << std::endl;
+                      << color_code << std::setw(5) << std::left << (done ? "done" : "pending") << reset_code << " |" << std::endl;
         }
 
         std::cout << "+----+----------------------+----------------------+-------+" << std::endl;
